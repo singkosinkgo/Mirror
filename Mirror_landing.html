@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朵拉Doris的个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(120deg, #e6dee9, #d5c5e0, #e2c2e0, #e8b2d0);
+            background-size: 400% 400%;
+            height: 100vh;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #5a4a6f;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .app-container {
+            width: 375px;
+            height: 812px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部导航栏样式 */
+        .header {
+            background: rgba(255, 255, 255, 0.35);
+            padding: 20px 20px 15px;
+            border-radius: 0 0 15px 15px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .time-display {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #5a4a6f;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: #7d6c94;
+        }
+        
+        .tab.active {
+            background: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 2px 10px rgba(183, 173, 210, 0.3);
+            color: #5a4a6f;
+        }
+        
+        /* 用户信息区域样式 */
+        .user-container {
+            padding: 40px 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 0 4px 20px rgba(192, 180, 219, 0.3);
+        }
+        
+        .user-name {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding: 8px 18px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.35);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            color: #5a4a6f;
+        }
+        
+        .user-name:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .edit-icon {
+            margin-left: 8px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        
+        /* 相机卡片样式 */
+        .camera-card {
+            position: relative;
+            width: 280px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .camera-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #d3c7e8, #d0c0e6, #ded2f0, #d8cbe7);
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 24px;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            animation: border-glow 4s ease infinite;
+        }
+        
+        @keyframes border-glow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .camera-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(192, 180, 219, 0.4);
+        }
+        
+        .camera-card:hover::before {
+            opacity: 1;
+        }
+        
+        .plus-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #d3c7e8, #b8a9d6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(192, 180, 219, 0.4);
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .camera-card:hover .plus-icon {
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 6px 20px rgba(192, 180, 219, 0.5);
+        }
+        
+        .card-text {
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #5a4a6f;
+        }
+        
+        /* 底部导航样式 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            color: #7d6c94;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.5);
+            color: #5a4a6f;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        /* 隐藏的文件输入 */
+        .hidden-input {
+            display: none;
+        }
+        
+        /* 编辑框样式 */
+        .edit-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            width: 280px;
+            text-align: center;
+        }
+        
+        .edit-title {
+            color: #8a76ab;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .edit-input {
+            padding: 12px 15px;
+            border: 2px solid #d3c7e8;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #5a4a6f;
+            outline: none;
+            text-align: center;
+        }
+        
+        .edit-input:focus {
+            border-color: #b8a9d6;
+            box-shadow: 0 0 0 3px rgba(183, 173, 210, 0.3);
+        }
+        
+        .save-btn {
+            background: linear-gradient(to right, #d3c7e8, #b8a9d6);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(183, 173, 210, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <div class="header">
+            <div class="time-display" id="current-time">12:00</div>
+            <div class="tabs">
+                <div class="tab">热门</div>
+                <div class="tab active">我的</div>
+            </div>
+        </div>
+        
+        <!-- 用户信息区域 -->
+        <div class="user-container">
+            <div class="avatar-container">
+                <img id="avatar" src="https://randomuser.me/api/portraits/women/21.jpg" class="avatar" alt="朵拉Doris">
+                <input type="file" id="avatar-input" class="hidden-input" accept="image/*">
+            </div>
+            
+            <div class="user-name" id="username">
+                朵拉Doris
+                <i class="fas fa-pencil-alt edit-icon"></i>
+            </div>
+            
+            <div class="camera-card" id="camera-card">
+                <div class="plus-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="card-text">打开摄像头，开启变美之路</div>
+                <input type="file" id="camera-input" class="hidden-input" accept="image/*" capture="camera">
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <i class="fas fa-home nav-icon"></i>
+                首页
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-search nav-icon"></i>
+                发现
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-user nav-icon"></i>
+                我的
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-cog nav-icon"></i>
+                设置
+            </div>
+        </div>
+        
+        <!-- 用户名编辑框 -->
+        <div class="edit-box" id="edit-box" style="display:none;">
+            <h3 class="edit-title">编辑用户名</h3>
+            <input type="text" class="edit-input" id="name-input" value="朵拉Doris">
+            <button class="save-btn" id="save-btn">保存</button>
+        </div>
+    </div>
+    
+    <script>
+        // 功能实现代码
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新当前时间
+            function updateTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+            }
+            
+            // 初始更新时间并设置定时器
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // 头像点击触发文件选择
+            const avatar = document.getElementById('avatar');
+            const avatarInput = document.getElementById('avatar-input');
+            
+            avatar.addEventListener('click', function() {
+                avatarInput.click();
+            });
+            
+            // 头像图片预览
+            avatarInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        avatar.src = event.target.result;
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // 相机卡片点击触发相机
+            const cameraCard = document.getElementById('camera-card');
+            const cameraInput = document.getElementById('camera-input');
+            
+            cameraCard.addEventListener('click', function() {
+                cameraInput.click();
+            });
+            
+            // 拍摄后的处理
+            cameraInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        alert('照片拍摄成功！');
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // 用户名编辑功能
+            const userName = document.getElementById('username');
+            const editBox = document.getElementById('edit-box');
+            const nameInput = document.getElementById('name-input');
+            const saveBtn = document.getElementById('save-btn');
+            
+            userName.addEventListener('click', function() {
+                editBox.style.display = 'flex';
+                nameInput.value = userName.textContent.trim();
+                nameInput.focus();
+                nameInput.select();
+            });
+            
+            saveBtn.addEventListener('click', function() {
+                const newName = nameInput.value.trim();
+                if (newName.length > 0) {
+                    userName.textContent = newName;
+                    userName.innerHTML += '<i class="fas fa-pencil-alt edit-icon"></i>';
+                }
+                editBox.style.display = 'none';
+            });
+            
+            // 点击编辑框外部关闭编辑框
+            document.addEventListener('click', function(e) {
+                if (!editBox.contains(e.target) && e.target !== userName && !userName.contains(e.target)) {
+                    editBox.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
